@@ -1,41 +1,45 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-### 使用ColorFilter实现的蒙层引导, 参考[https://juejin.cn/post/7089087097218269197](https://juejin.cn/post/7089087097218269197)
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+# Masked guide implemented with ColorFilter, refer by [https://juejin.cn/post/7089087097218269197](https://juejin.cn/post/7089087097218269197)
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+```dart
+import 'package:mask_guide/mask_guide.dart';
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+### First of all, add `MaskGuideNavigatorObserver()` in `MaterialApp()`
 
-```dart
-const like = 'sample';
+```
+MaterialApp(
+ navigatorObservers: [MaskGuideNavigatorObserver()],
+)
 ```
 
-## Additional information
+### Usage of Custom Step Widget
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+Extend the `StepWidget` and override `preStep`, `nextStep`, `doneCallBack` if you need.
+
+```
+class CustomStepWidget extends StepWidget
+
+@override
+void preStep() {
+ super.preStep();
+ // todo: do something
+}
+
+@override
+void nextStep() {
+ super.nextStep();
+ // todo: do something
+}
+
+@override
+void doneCallBack() {
+ super.doneCallBack();
+ // todo: do something
+}
+```
+
+For the rest, please refer to the [EXAMPLE](https://github.com/Dabbit-Chan/mask_guide/tree/master/example)

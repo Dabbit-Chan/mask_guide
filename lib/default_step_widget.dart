@@ -10,6 +10,7 @@ class DefaultStepWidget extends StepWidget {
     required this.needAnimate,
     this.nextStepCallBacks,
     this.preStepCallBacks,
+    this.outsideDoneCallBack,
 
     required this.divide,
     required this.maxWidthScale,
@@ -31,6 +32,7 @@ class DefaultStepWidget extends StepWidget {
   final bool needAnimate;
   final List<Function>? nextStepCallBacks;
   final List<Function>? preStepCallBacks;
+  final Function? outsideDoneCallBack;
 
   /// UI
   final double divide;
@@ -68,6 +70,12 @@ class DefaultStepWidget extends StepWidget {
     } catch(_) {
       super.nextStep();
     }
+  }
+
+  @override
+  void doneCallBack() {
+    super.doneCallBack();
+    outsideDoneCallBack?.call();
   }
 
   @override

@@ -146,6 +146,7 @@ class _MaskGuideWidgetState extends State<MaskGuideWidget> {
             needAnimate: widget.needAnimate,
             nextStepCallBacks: widget.nextStepCallBacks,
             preStepCallBacks: widget.preStepCallBacks,
+            outsideDoneCallBack: widget.doneCallBack,
 
             divide: widget.margin.bottom + widget.divide,
             maxWidthScale: widget.maxWidthScale,

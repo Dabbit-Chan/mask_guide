@@ -1,6 +1,6 @@
 name: mask_guide
 description: A Masked guide implemented with ColorFilter.
-version: 0.0.3
+version: 1.0.0
 homepage: https://github.com/Dabbit-Chan/mask_guide
 
 environment:

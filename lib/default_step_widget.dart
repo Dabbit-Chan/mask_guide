@@ -6,12 +6,10 @@ class DefaultStepWidget extends StepWidget {
     Key? key,
     required this.keys,
     this.guideTexts,
-
     required this.needAnimate,
     this.nextStepCallBacks,
     this.preStepCallBacks,
     this.outsideDoneCallBack,
-
     required this.divide,
     required this.maxWidthScale,
     required this.nextText,
@@ -50,15 +48,21 @@ class DefaultStepWidget extends StepWidget {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: guideTextStyle),
       textDirection: TextDirection.ltr,
-    )..layout(maxWidth: MediaQuery.of(context).size.width * maxWidthScale, minWidth: 82);
-    return Size(textPainter.size.width + padding.left + padding.right, textPainter.size.height + padding.top + padding.bottom);
+    )..layout(
+        maxWidth: MediaQuery.sizeOf(context).width * maxWidthScale,
+        minWidth: 82,
+      );
+    return Size(
+      textPainter.size.width + padding.left + padding.right,
+      textPainter.size.height + padding.top + padding.bottom,
+    );
   }
 
   @override
   void preStep() {
     try {
-      preStepCallBacks?[step].call().then((_) => super.preStep());
-    } catch(_) {
+      preStepCallBacks?[step].call().whenComplete(() => super.preStep());
+    } catch (_) {
       super.preStep();
     }
   }
@@ -66,8 +70,8 @@ class DefaultStepWidget extends StepWidget {
   @override
   void nextStep() {
     try {
-      nextStepCallBacks?[step].call().then((_) => super.nextStep());
-    } catch(_) {
+      nextStepCallBacks?[step].call().whenComplete(() => super.nextStep());
+    } catch (_) {
       super.nextStep();
     }
   }
@@ -87,23 +91,33 @@ class DefaultStepWidget extends StepWidget {
         double? bottom;
         double? left;
         double? right;
-        RenderBox renderBox = keys[step].currentContext?.findRenderObject() as RenderBox;
+        RenderBox renderBox =
+            keys[step].currentContext?.findRenderObject() as RenderBox;
         // 默认位置为左下
-        top = renderBox.localToGlobal(Offset.zero).dy + renderBox.size.height + divide;
+        top = renderBox.localToGlobal(Offset.zero).dy +
+            renderBox.size.height +
+            divide;
         left = renderBox.localToGlobal(Offset.zero).dx;
 
-        if (top + stepWidgetSize(context, guideTexts![step]).height > MediaQuery.of(context).size.height) {
+        if (top + stepWidgetSize(context, guideTexts![step]).height >
+            MediaQuery.sizeOf(context).height) {
           top = null;
-          bottom = MediaQuery.of(context).size.height - renderBox.localToGlobal(Offset.zero).dy + divide;
+          bottom = MediaQuery.sizeOf(context).height -
+              renderBox.localToGlobal(Offset.zero).dy +
+              divide;
         }
 
-        if (left + stepWidgetSize(context, guideTexts![step]).width > MediaQuery.of(context).size.width) {
+        if (left + stepWidgetSize(context, guideTexts![step]).width >
+            MediaQuery.sizeOf(context).width) {
           left = null;
-          right = MediaQuery.of(context).size.width - renderBox.localToGlobal(Offset.zero).dx - renderBox.size.width;
+          right = MediaQuery.sizeOf(context).width -
+              renderBox.localToGlobal(Offset.zero).dx -
+              renderBox.size.width;
         }
 
         return AnimatedPositioned(
-          duration: needAnimate ? const Duration(milliseconds: 300) : Duration.zero,
+          duration:
+              needAnimate ? const Duration(milliseconds: 300) : Duration.zero,
           top: top,
           bottom: bottom,
           right: right,
@@ -111,7 +125,7 @@ class DefaultStepWidget extends StepWidget {
           child: Container(
             padding: padding,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * maxWidthScale,
+              maxWidth: MediaQuery.sizeOf(context).width * maxWidthScale,
             ),
             decoration: BoxDecoration(
               color: Colors.white,

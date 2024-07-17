@@ -5,26 +5,56 @@ class CustomStepWidget extends StepWidget {
   CustomStepWidget({
     Key? key,
     required this.keys,
+    required this.scrollController,
   }) : super(key: key);
 
   final List<GlobalKey> keys;
+  final ScrollController scrollController;
+
+  Future<void> scrollDown() async {
+    await scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
+  }
+
+  Future<void> scrollUp() async {
+    await scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
+  }
 
   @override
   void preStep() {
-    super.preStep();
-    print('preStep');
+    print('custom preStep');
+    if (step == 3) {
+      scrollUp().whenComplete(() {
+        super.preStep();
+      });
+    } else {
+      super.preStep();
+    }
   }
 
   @override
   void nextStep() {
-    super.nextStep();
-    print('nextStep');
+    print('custom nextStep');
+    if (step == 2) {
+      scrollDown().whenComplete(() {
+        super.nextStep();
+      });
+    } else {
+      super.nextStep();
+    }
   }
 
   @override
   void doneCallBack() {
     super.doneCallBack();
-    print('doneCallBack');
+    print('custom doneCallBack');
   }
 
   final double divide = 10;
@@ -40,19 +70,26 @@ class CustomStepWidget extends StepWidget {
         double? bottom;
         double? left;
         double? right;
-        RenderBox renderBox = keys[step].currentContext?.findRenderObject() as RenderBox;
+        RenderBox renderBox =
+            keys[step].currentContext?.findRenderObject() as RenderBox;
         // 默认位置为左下
-        top = renderBox.localToGlobal(Offset.zero).dy + renderBox.size.height + divide;
+        top = renderBox.localToGlobal(Offset.zero).dy +
+            renderBox.size.height +
+            divide;
         left = renderBox.localToGlobal(Offset.zero).dx;
 
-        if (top + stepHeight > MediaQuery.of(context).size.height) {
+        if (top + stepHeight > MediaQuery.sizeOf(context).height) {
           top = null;
-          bottom = MediaQuery.of(context).size.height - renderBox.localToGlobal(Offset.zero).dy + divide;
+          bottom = MediaQuery.sizeOf(context).height -
+              renderBox.localToGlobal(Offset.zero).dy +
+              divide;
         }
 
-        if (left + stepWidth > MediaQuery.of(context).size.width) {
+        if (left + stepWidth > MediaQuery.sizeOf(context).width) {
           left = null;
-          right = MediaQuery.of(context).size.width - renderBox.localToGlobal(Offset.zero).dx - renderBox.size.width;
+          right = MediaQuery.sizeOf(context).width -
+              renderBox.localToGlobal(Offset.zero).dx -
+              renderBox.size.width;
         }
 
         return AnimatedPositioned(

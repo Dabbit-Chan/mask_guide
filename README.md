@@ -19,6 +19,7 @@ MaterialApp(
 ### Usage of Custom Step Widget
 
 Extend the `StepWidget` and override `preStep`, `nextStep`, `doneCallBack` if you need.
+To create a custom step widget, you should calculate the position of the widget yourself.
 
 ```
 class CustomStepWidget extends StepWidget

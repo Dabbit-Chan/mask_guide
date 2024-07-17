@@ -40,7 +40,8 @@ class _FirstPageState extends State<FirstPage> {
           children: [
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => MyHomePage(autoStart: autoStart)));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => MyHomePage(autoStart: autoStart)));
               },
               child: const Text('Start'),
             ),
@@ -49,12 +50,13 @@ class _FirstPageState extends State<FirstPage> {
               children: [
                 const Text('Auto Show:'),
                 Switch(
-                    value: autoStart,
-                    onChanged: (value) {
-                      setState(() {
-                        autoStart = value;
-                      });
-                    }),
+                  value: autoStart,
+                  onChanged: (value) {
+                    setState(() {
+                      autoStart = value;
+                    });
+                  },
+                ),
               ],
             )
           ],
@@ -82,78 +84,89 @@ class _MyHomePageState extends State<MyHomePage> {
   final MaskGuide maskGuide = MaskGuide();
 
   ScrollController scrollController = ScrollController();
-  bool pop = false;
-  bool prevent = false;
+  bool canPopOut = true;
 
   Future<void> scrollDown() async {
-    RenderBox renderBox = greenKey.currentContext?.findRenderObject() as RenderBox;
-    double offset = renderBox.localToGlobal(Offset.zero).dy;
-    await scrollController.animateTo(offset, duration: const Duration(milliseconds: 600), curve: Curves.linear);
+    await scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
+  }
+
+  Future<void> scrollUp() async {
+    await scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
   }
 
   void showMaskGuide({required bool canPop, required bool canDismiss}) {
-    if (canPop) {
-      prevent = false;
-      pop = true;
-    } else {
-      prevent = true;
-      pop = false;
-    }
+    setState(() {
+      canPopOut = canPop;
+    });
     maskGuide.showMaskGuide(
       context: context,
       keys: [redKey, yellowKey, blueKey, greenKey],
-      guideTexts: ['This is first' * 10, 'This is second', 'This is third', 'This is forth'],
+      guideTexts: [
+        'This is first',
+        'This is second',
+        'This is third',
+        'This is forth'
+      ],
       canPop: canPop,
       canDismiss: canDismiss,
       doneCallBack: () {
-        prevent = false;
-        pop = true;
+        setState(() {
+          canPopOut = true;
+        });
         print('default done');
       },
       dismissCallBack: () {
-        prevent = false;
-        pop = true;
+        setState(() {
+          canPopOut = true;
+        });
         print('default dismiss');
       },
       nextStepCallBacks: [
-            () {},
-            () {},
-            () => scrollDown(),
-            () {},
+        () {},
+        () {},
+        () => scrollDown(),
+        () {},
       ],
       preStepCallBacks: [
-            () {},
-            () {},
-            () {},
-            () async => await scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.linear),
+        () {},
+        () {},
+        () {},
+        () => scrollUp(),
       ],
     );
   }
 
   void showCustomMaskGuide({required bool canPop, required bool canDismiss}) {
-    if (canPop) {
-      prevent = false;
-      pop = true;
-    } else {
-      prevent = true;
-      pop = false;
-    }
+    setState(() {
+      canPopOut = canPop;
+    });
     maskGuide.showMaskGuide(
       context: context,
       keys: [redKey, yellowKey, blueKey, greenKey],
       customStepWidget: CustomStepWidget(
         keys: [redKey, yellowKey, blueKey, greenKey],
+        scrollController: scrollController,
       ),
       canPop: canPop,
       canDismiss: canDismiss,
       doneCallBack: () {
-        prevent = false;
-        pop = true;
+        setState(() {
+          canPopOut = true;
+        });
         print('custom done');
       },
       dismissCallBack: () {
-        prevent = false;
-        pop = true;
+        setState(() {
+          canPopOut = true;
+        });
         print('custom dismiss');
       },
     );
@@ -163,20 +176,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     if (widget.autoStart) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => showMaskGuide(canPop: false, canDismiss: false));
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => showMaskGuide(canPop: false, canDismiss: false));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        if (prevent) {
-          return Future.value(pop);
-        } else {
-          return Future.value(true);
-        }
-      },
+    return PopScope(
+      canPop: canPopOut,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Home Page'),

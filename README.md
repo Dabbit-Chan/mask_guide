@@ -41,5 +41,4 @@ void doneCallBack() {
  // todo: do something
 }
 ```
-
-For the rest, please refer to the [EXAMPLE](https://github.com/Dabbit-Chan/mask_guide/tree/master/example)
+Check [example](https://github.com/Dabbit-Chan/mask_guide/tree/master/example) for more.

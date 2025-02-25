@@ -1,4 +1,4 @@
-## Masked guide implemented with ColorFilter, refer by [https://juejin.cn/post/7089087097218269197](https://juejin.cn/post/7089087097218269197)
+## Mask guide implemented with ColorFilter, refer by [https://juejin.cn/post/7089087097218269197](https://juejin.cn/post/7089087097218269197)
 
 ## Getting started
 
